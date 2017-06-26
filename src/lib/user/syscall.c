@@ -182,3 +182,35 @@ inumber (int fd)
 {
   return syscall1 (SYS_INUMBER, fd);
 }
+
+int init_semaphore(int value){
+  return syscall1(SYS_INIT_SEMAPHORE, value);
+}
+
+int wait_semaphore(int value){
+  return syscall1(SYS_WAIT_SEMAPHORE, value);
+}
+
+int post_semaphore(int value){
+  return syscall1(SYS_POST_SEMAPHORE, value);
+}
+
+int writer(int value){
+  return syscall1(SYS_WRITER, value);
+}
+
+int reader(){
+  return syscall0(SYS_READER);
+}
+
+int sum_readers(){
+  return syscall0(SYS_SUM_READERS);
+}
+
+int sub_readers(){
+  return syscall0(SYS_SUB_READERS);
+}
+
+int get_readers(){
+  return syscall0(SYS_GET_READERS);
+}

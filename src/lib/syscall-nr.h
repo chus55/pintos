@@ -28,7 +28,15 @@ enum
     SYS_MKDIR,                  /* Create a directory. */
     SYS_READDIR,                /* Reads a directory entry. */
     SYS_ISDIR,                  /* Tests if a fd represents a directory. */
-    SYS_INUMBER                 /* Returns the inode number for a fd. */
+    SYS_INUMBER,                /* Returns the inode number for a fd. */
+    SYS_INIT_SEMAPHORE,
+    SYS_WAIT_SEMAPHORE,
+    SYS_POST_SEMAPHORE,
+    SYS_WRITER,
+    SYS_READER,
+    SYS_SUM_READERS,
+    SYS_SUB_READERS,
+    SYS_GET_READERS
   };
 
 #endif /* lib/syscall-nr.h */

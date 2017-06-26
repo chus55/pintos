@@ -45,4 +45,14 @@ bool readdir (int fd, char name[READDIR_MAX_LEN + 1]);
 bool isdir (int fd);
 int inumber (int fd);
 
+int init_semaphore(int value);
+int wait_semaphore(int value);
+int post_semaphore(int value);
+
+int writer(int value);
+int reader();
+int sum_readers();
+int sub_readers();
+int get_readers();
+
 #endif /* lib/user/syscall.h */

@@ -69,6 +69,24 @@ bool sys_isdir(int fd);
 int sys_inumber(int fd);
 #endif
 
+int sys_init_sem(int value);
+int sys_wait_sem(int value);
+int sys_post_sem(int value);
+
+static struct semaphore semaphores[10];
+int semaphores_index;
+
+int sys_writer(int value);
+int sys_reader();
+
+int reader_writer_value;
+
+int sys_sum_readers();
+int sys_sub_readers();
+int sys_get_readers();
+
+int reader_counter;
+
 struct lock filesys_lock;
 
 void
@@ -337,6 +355,57 @@ syscall_handler (struct intr_frame *f)
 
 #endif
 
+  case SYS_INIT_SEMAPHORE:
+    {
+      int value;
+      memread_user(f->esp + 4, &value, sizeof(value));
+      f->eax = sys_init_sem(value);
+      break;
+    }
+  case SYS_WAIT_SEMAPHORE:
+    {
+      int value;
+      memread_user(f->esp + 4, &value, sizeof(value));
+      f->eax = sys_wait_sem(value);
+      break;
+    }
+  case SYS_POST_SEMAPHORE:
+    {
+      int value;
+      memread_user(f->esp + 4, &value, sizeof(value));
+      f->eax = sys_post_sem(value);
+      break;
+    }
+
+  case SYS_WRITER:
+    {
+      int value;
+      memread_user(f->esp + 4, &value, sizeof(value));
+      f->eax = sys_writer(value);
+      break;
+    }
+  case SYS_READER:
+    {
+      int return_value = sys_reader();
+      f->eax = return_value;
+      break;
+    }
+    case SYS_SUM_READERS:
+    {
+      f->eax = sys_sum_readers();
+      break;
+    }
+  case SYS_SUB_READERS:
+    {
+      f->eax = sys_sub_readers();
+      break;
+    }
+  case SYS_GET_READERS:
+    {
+      int return_value = sys_get_readers();
+      f->eax = return_value;
+      break;
+    }
 
   /* unhandled case */
   default:
@@ -916,3 +985,42 @@ int sys_inumber(int fd)
 }
 
 #endif
+
+int sys_init_sem(int value){
+  sema_init(&semaphores[semaphores_index], value);
+  semaphores_index ++;
+  return semaphores_index;
+}
+
+int sys_wait_sem(int semaphore){
+  sema_down(&semaphores[semaphore]);
+  return 1;
+}
+
+int sys_post_sem(int semaphore){
+  sema_up(&semaphores[semaphore]);
+  return 1;
+}
+
+int sys_writer(int value){
+  reader_writer_value = value;
+  return 1;
+}
+
+int sys_reader(){
+  return reader_writer_value;
+}
+
+int sys_sum_readers(){
+  reader_counter++;
+  return 1;
+}
+
+int sys_sub_readers(){
+  reader_counter--;
+  return 1;
+}
+
+int sys_get_readers(){
+  return reader_counter;
+}
